@@ -9,6 +9,17 @@ const (
 	Admin  UserRole = "Admin"
 )
 
+func (u UserRole) String() string {
+	switch u {
+	case Normal:
+		return "Normal"
+	case Admin:
+		return "Admin"
+	default:
+		return "Unknown"
+	}
+}
+
 type User struct {
 	ID        string    `gorm:"type:uuid;primary_key;" json:"id"`
 	Name      string    `gorm:"not null" json:"name"`

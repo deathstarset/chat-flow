@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/deathstarset/backend-chatflow/controllers"
-	"github.com/deathstarset/backend-chatflow/initializers"
 	"github.com/deathstarset/backend-chatflow/models"
 	"github.com/deathstarset/backend-chatflow/utils"
 	"github.com/gin-gonic/gin"
@@ -38,7 +37,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	err = utils.CreateUserSession(initializers.RD, c, user)
+	err = utils.CreateUserSession(c, user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": fmt.Sprintf("session err : %s", err.Error())})
 		return
@@ -54,6 +53,7 @@ func Register(c *gin.Context) {
 		Email    string                `form:"email" binding:"required"`
 		Password string                `form:"password" binding:"required"`
 		Image    *multipart.FileHeader `form:"image" binding:"required"`
+		Role     models.UserRole       `form:"role" binding:"required"`
 	}
 
 	err := c.ShouldBind(&body)
@@ -83,6 +83,7 @@ func Register(c *gin.Context) {
 		Image:     imageName,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
+		Role:      body.Role,
 	})
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": fmt.Sprintf("Db err : %s", err.Error())})

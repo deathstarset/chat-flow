@@ -1,12 +1,10 @@
 package main
 
 import (
-	"net/http"
 	"os"
 
 	"github.com/deathstarset/backend-chatflow/initializers"
 	"github.com/deathstarset/backend-chatflow/routes"
-	"github.com/deathstarset/backend-chatflow/utils"
 	"github.com/gin-contrib/cors"
 
 	"github.com/gin-gonic/gin"
@@ -34,11 +32,7 @@ func main() {
 	r.Static("/api/v1/uploads/profile", "./uploads/profile")
 	routes.UserRoutes(r.Group("/api/v1/users"))
 	routes.AuthRoutes(r.Group("/api/v1/auth"))
+	routes.ProfileRoutes(r.Group("/api/v1/profile"))
 
-	// test auth middleware
-	r.Use(utils.AuthMiddleware)
-	r.GET("/protected", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "this is a protected route"})
-	})
 	r.Run(port)
 }

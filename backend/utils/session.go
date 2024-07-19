@@ -2,13 +2,11 @@ package utils
 
 import (
 	"encoding/json"
-	"log"
 	"time"
 
 	"github.com/deathstarset/backend-chatflow/initializers"
 	"github.com/deathstarset/backend-chatflow/models"
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis"
 
 	"github.com/google/uuid"
 )
@@ -17,7 +15,7 @@ type SessionUser struct {
 	ID string `json:"id"`
 }
 
-func CreateUserSession(client *redis.Client, c *gin.Context, user models.User) error {
+func CreateUserSession(c *gin.Context, user models.User) error {
 	sessionID := uuid.NewString()
 	sessionUser := SessionUser{
 		ID: user.ID,
@@ -30,7 +28,7 @@ func CreateUserSession(client *redis.Client, c *gin.Context, user models.User) e
 	}
 
 	// add the session to redis
-	_, err = client.Set(sessionID, jsonSession, time.Hour*1).Result()
+	_, err = initializers.RD.Set(sessionID, jsonSession, time.Hour*1).Result()
 	if err != nil {
 		return err
 	}
@@ -40,20 +38,23 @@ func CreateUserSession(client *redis.Client, c *gin.Context, user models.User) e
 	return nil
 }
 
-func AuthMiddleware(c *gin.Context) {
-	sessionID, err := c.Cookie("session-id")
-	if err != nil {
-
+func ParseUser(c *gin.Context) (models.User, bool) {
+	var user models.User
+	userContext, ok := c.Get("user")
+	if !ok {
+		return user, ok
 	}
-	userSessionString, err := initializers.RD.Get(sessionID).Result()
-	if err != nil {
-
+	user, ok = userContext.(models.User)
+	if !ok {
+		return user, ok
 	}
-	var userSession SessionUser
-	err = json.Unmarshal([]byte(userSessionString), &userSession)
-	if err != nil {
+	return user, true
+}
 
+func RemoveUserSession(sessionID string) error {
+	_, err := initializers.RD.Del(sessionID).Result()
+	if err != nil {
+		return err
 	}
-	log.Println(userSession.ID)
-	c.Next()
+	return nil
 }
