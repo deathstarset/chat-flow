@@ -22,6 +22,15 @@ export default function RegisterForm() {
   const onSubmit: SubmitHandler<RegisterType> = (data) => {
     console.log(data);
   };
+
+  const passwordEye = hidePassword ? (
+    <FaEye className="cursor-pointer" onClick={() => setHidePassword(false)} />
+  ) : (
+    <FaEyeSlash
+      className="cursor-pointer"
+      onClick={() => setHidePassword(true)}
+    />
+  );
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <div>
@@ -30,7 +39,7 @@ export default function RegisterForm() {
           type="text"
           placeholder="Your Name"
           className="input input-bordered w-full max-w-xs"
-          {...(register("name"), { required: true })}
+          {...register("name", { required: true })}
         />
       </div>
       <div>
@@ -39,7 +48,7 @@ export default function RegisterForm() {
           type="text"
           placeholder="Your Email"
           className="input input-bordered w-full max-w-xs"
-          {...(register("email"), { required: true })}
+          {...register("email", { required: true })}
         />
       </div>
       <div>
@@ -48,7 +57,7 @@ export default function RegisterForm() {
           type="text"
           placeholder="Your Username"
           className="input input-bordered w-full max-w-xs"
-          {...(register("username"), { required: true })}
+          {...register("username", { required: true })}
         />
       </div>
       <div>
@@ -58,22 +67,12 @@ export default function RegisterForm() {
             type={`${hidePassword ? "password" : "text"}`}
             placeholder="Your Password"
             className="grow h-full w-full"
-            {...(register("password"), { required: true })}
+            {...register("password", { required: true })}
           />
-          {hidePassword ? (
-            <FaEye
-              className="cursor-pointer"
-              onClick={() => setHidePassword(false)}
-            />
-          ) : (
-            <FaEyeSlash
-              className="cursor-pointer"
-              onClick={() => setHidePassword(true)}
-            />
-          )}
+          {passwordEye}
         </label>
       </div>
-      <button className="btn btn-primary">Log In</button>
+      <button className="btn btn-primary">Register</button>
     </form>
   );
 }

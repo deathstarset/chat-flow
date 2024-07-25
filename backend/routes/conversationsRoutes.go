@@ -9,5 +9,7 @@ import (
 func ConversationRoutes(g *gin.RouterGroup) {
 	g.Use(middlewares.AuthOnly)
 	g.POST("", handlers.CreateConversation)
-	g.GET(":id", handlers.GetAllConversations)
+	g.GET("", handlers.GetAllConversations)
+	g.GET(":id", handlers.GetConversation)
+	g.DELETE(":id", handlers.DeleteConversation)
 }
