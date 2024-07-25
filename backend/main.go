@@ -33,6 +33,7 @@ func main() {
 	routes.UserRoutes(r.Group("/api/v1/users"))
 	routes.AuthRoutes(r.Group("/api/v1/auth"))
 	routes.ProfileRoutes(r.Group("/api/v1/profile"))
+	routes.ConversationRoutes(r.Group("/api/v1/conversations"))
 
 	r.Run(port)
 }
